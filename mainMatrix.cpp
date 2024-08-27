@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 
+
 void Transpose (int *data_transpose, const int *data, size_t sizeX, size_t sizeY)
 {
 
@@ -35,12 +36,29 @@ void SumMatrixes (const int *data1, const int *data2, int *data_sum, size_t size
 
 }
 
-void MultipleMatrixes (const int *data1, const int *data2, int *data_multiple_matrix, size_t sizeY, size_t sizeX)
+int ElementOfMultipleMatrixes (int *data1, int *data2, size_t sizeX1, size_t sizeX2)
 {
+    int element = 0;
+    for (int x = 0; x < sizeX1; x++)
+    {
+        element += ((*(data1 + x)) * (*(data2 + x * sizeX2)));
+        printf ("%d * %d ", *(data1 + x), *(data2 + x * sizeX2));
+    }
+    printf ("%d \n", element);
+    return element;
 
 }
 
+void MultipleMatrixes (int *data1, int *data2, int *data_multiple_matrix, size_t sizeY1, size_t sizeX1, size_t sizeY2, size_t sizeX2)
+{
 
+
+    for (size_t y = 0; y < sizeY1; y++)
+        for (size_t x = 0; x < sizeX2; x++)
+            *(data_multiple_matrix + y * sizeX2 + x) = ElementOfMultipleMatrixes(data1 + y * sizeX1, data2 + x, sizeX1, sizeX2);
+
+
+}
 
 void Print (const int *data, size_t sizeY, size_t sizeX)
 {
@@ -55,6 +73,20 @@ void Print (const int *data, size_t sizeY, size_t sizeX)
 
 }
 
+int FindScore (int first_team, int second_team, int *match_table )
+{
+    if (second_team < first_team)
+    {
+        int temp = second_team;
+        second_team = first_team;
+        first_team = temp;
+    }
+
+
+    int sum = ((first_team - 1) * (first_team)) / 2;
+    return *(match_table + sum + second_team);
+
+}
 
 int main ()
 {
@@ -74,13 +106,33 @@ int main ()
     int data_sum [sizeY][sizeX] = {};
 
     const int k = 2;
-    MultipleNumber(k, *data, *data_multiple_number, sizeY, sizeX);
+    //MultipleNumber(k, *data, *data_multiple_number, sizeY, sizeX);
     //Transpose (*data_transpose, *data, sizeX, sizeY);
-    SumMatrixes (*data, *data_multiple_number, *data_sum, sizeY, sizeX);
+    //SumMatrixes (*data, *data_multiple_number, *data_sum, sizeY, sizeX);
+    int data1 [2][3] = {{1, 2, 3},
+                        {4, 5, 6}
+                       };
+    int data2 [3][4] = {{1,  2,  3,  4},
+                       {5,  6,  7,  8},
+                       {9, 10, 11, 12}
+                      };
 
-    Print(*data_sum, sizeY, sizeX);
+    size_t sizeY1 = 2;
+    size_t sizeX1 = 3;
+    size_t sizeY2 = 3;
+    size_t sizeX2 = 4;
+    int data_multiple_matrix [sizeY1][sizeX2] = {};
 
 
+    int match_table[6] = { 1, 2, 3, 4, 5, 6 };
+    printf ("%d", FindScore(3, 0, match_table));
+
+
+    // Print(*data_multiple_matrix, sizeY1, sizeX2);
+
+    // MultipleMatrixes(*data1, *data2, *data_multiple_matrix, sizeY1, sizeX1, sizeY2, sizeX2);
+    //printf ("%d %d %d", **data2 , *(*data2 + 1 * 4 ), *(*data2 + 2 * 4));
+    // printf ("%d", ElementOfMultipleMatrixes(*data1, *data2 , sizeX1, sizeX2));
 
     // print sizeX sizeY
     //printf ("sizeY = %d, sizeX = %d \n", sizeY, sizeX);
@@ -93,9 +145,5 @@ int main ()
     // for (int x = 0; x < 3; x++)
     //     printf("%d ", *((int *) data + 1 * sizeX + x));
     // printf ("}");
-
-
-
-
 
 }
